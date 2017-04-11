@@ -1,15 +1,29 @@
-FROM ubuntu:xenial
-MAINTAINER Kevin Wittek <kevin.wittek@groovy-coder.com>
+FROM       resin/rpi-raspbian
+MAINTAINER Martin Stepahne  <martin.stephane@gmail.com>
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common \
+    curl
 
-RUN apt update && apt -y install apt-transport-https ca-certificates curl
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+
+RUN echo "deb [arch=armhf] https://download.docker.com/linux/debian jessie stable" \
+    | tee /etc/apt/sources.list.d/docker.list
+
+RUN echo "deb https://packagecloud.io/Hypriot/Schatzkiste/debian/ jessie main" \
+    | tee /etc/apt/sources.list.d/hypriot.list
+
 RUN apt-key adv \
-               --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-               --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-RUN echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | tee /etc/apt/sources.list.d/docker.list
-RUN apt update && apt -y install docker-engine
-RUN curl -L https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
+    --keyserver keyserver.ubuntu.com \ 
+    --recv-keys 37BBEE3F7AD95B3F
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    docker-ce \
+    docker-compose \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 COPY docker_volume_backup.sh /
 
