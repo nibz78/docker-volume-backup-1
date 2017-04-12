@@ -2,7 +2,9 @@ FROM armhf/alpine:latest
 
 WORKDIR /root/
 
-RUN apk add --update curl ca-certificates mysql-client docker
+RUN apk add --update curl ca-certificates mysql-client docker &&  \
+    curl https://dl.minio.io/client/mc/release/linux-arm/mc > /usr/local/bin/mc && \
+    chmod +x /usr/local/bin/mc
 
 ADD backup_mysqldata.sh backup_mysqldata.sh
 RUN chmod +x  backup_mysqldata.sh

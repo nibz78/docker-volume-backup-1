@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+
+ backup:
+      container_name: backup
+      image: rpi-backup
+      restart: always 
+      volumes:
+       - /backup:/backup 
+       - /var/run/docker.sock:/var/run/docker.sock
